@@ -104,14 +104,30 @@ async function processFeatureTemplates(templateDir, projectDir, tempDir, config,
     let templateContent = await fs.readFile(templatePath, 'utf8');
 
     // Pre-process React Native JSX syntax to avoid conflicts with Handlebars
-    // Replace React Native style double curly braces with a placeholder
-    let templatePlaceholders = [];
-    templatePlaceholders.trackColor = [];
-
-    // Handle trackColor={{ false: colors.border, true: colors.primary }}
+    // Replace React Native style double curly braces with placeholders
+    let templatePlaceholders = {};
+    
+    // 1. Handle trackColor={{ false: colors.border, true: colors.primary }}
     templatePlaceholders.trackColor = templateContent.match(/trackColor={{\s*false:\s*colors\.\w+,\s*true:\s*colors\.\w+\s*}}/g) || [];
     for (let i = 0; i < templatePlaceholders.trackColor.length; i++) {
       templateContent = templateContent.replace(templatePlaceholders.trackColor[i], `trackColor=PLACEHOLDER_TRACKCOLOR_${i}`);
+    }
+    
+    // 2. Handle screenOptions={{ headerShown: true, ... }}
+    templatePlaceholders.screenOptions = templateContent.match(/screenOptions={{[\s\S]*?}}/g) || [];
+    for (let i = 0; i < templatePlaceholders.screenOptions.length; i++) {
+      templateContent = templateContent.replace(templatePlaceholders.screenOptions[i], `screenOptions=PLACEHOLDER_SCREENOPTIONS_${i}`);
+    }
+    
+    // 3. Handle any other JSX props with double curly braces
+    templatePlaceholders.jsxProps = templateContent.match(/\w+={{[\s\S]*?}}/g) || [];
+    // Filter out already processed placeholders
+    templatePlaceholders.jsxProps = templatePlaceholders.jsxProps.filter(prop => 
+      !templatePlaceholders.trackColor.includes(prop) && 
+      !templatePlaceholders.screenOptions.includes(prop)
+    );
+    for (let i = 0; i < templatePlaceholders.jsxProps.length; i++) {
+      templateContent = templateContent.replace(templatePlaceholders.jsxProps[i], `jsxprop=PLACEHOLDER_JSXPROP_${i}`);
     }
 
     // Compile the template
@@ -119,9 +135,19 @@ async function processFeatureTemplates(templateDir, projectDir, tempDir, config,
     let processedContent = template({ ...config, projectName: config.name });
 
     // Post-process to restore React Native JSX syntax
-    // Restore trackColor placeholders
+    // 1. Restore trackColor placeholders
     for (let i = 0; i < templatePlaceholders.trackColor.length; i++) {
       processedContent = processedContent.replace(`trackColor=PLACEHOLDER_TRACKCOLOR_${i}`, templatePlaceholders.trackColor[i]);
+    }
+    
+    // 2. Restore screenOptions placeholders
+    for (let i = 0; i < templatePlaceholders.screenOptions.length; i++) {
+      processedContent = processedContent.replace(`screenOptions=PLACEHOLDER_SCREENOPTIONS_${i}`, templatePlaceholders.screenOptions[i]);
+    }
+    
+    // 3. Restore other JSX props placeholders
+    for (let i = 0; i < templatePlaceholders.jsxProps.length; i++) {
+      processedContent = processedContent.replace(`jsxprop=PLACEHOLDER_JSXPROP_${i}`, templatePlaceholders.jsxProps[i]);
     }
     
     // Write processed template to output path

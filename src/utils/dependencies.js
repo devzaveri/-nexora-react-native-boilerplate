@@ -111,7 +111,7 @@ async function installDependencies(projectDir, config) {
     // Install regular dependencies
     if (dependencies.length > 0) {
       const installCmd = 'npm';
-      const installArgs = ['install', '--save', ...dependencies];
+      const installArgs = ['install', '--save', '--legacy-peer-deps', ...dependencies];
       
       await execa(installCmd, installArgs, { cwd: projectDir });
     }
@@ -119,7 +119,7 @@ async function installDependencies(projectDir, config) {
     // Install dev dependencies
     if (devDependencies.length > 0) {
       const installCmd = 'npm';
-      const installArgs = ['install', '--save-dev', ...devDependencies];
+      const installArgs = ['install', '--save-dev', '--legacy-peer-deps', ...devDependencies];
       
       await execa(installCmd, installArgs, { cwd: projectDir });
     }
@@ -148,7 +148,7 @@ async function uninstallDependencies(projectDir, feature) {
   
   try {
     const uninstallCmd = 'npm';
-    const uninstallArgs = ['uninstall', ...packagesToUninstall];
+    const uninstallArgs = ['uninstall', '--legacy-peer-deps', ...packagesToUninstall];
     
     await execa(uninstallCmd, uninstallArgs, { cwd: projectDir });
     

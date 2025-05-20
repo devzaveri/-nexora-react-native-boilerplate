@@ -1,0 +1,48 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "back": "Back",
+    "save": "Save",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "continue": "Continue",
+    "error": "Error",
+    "success": "Success",
+    "loading": "Loading..."
+  },
+  "home": {
+    "title": "Welcome to {{name}}",
+    "subtitle": "This is the Home Screen",
+    "goToSettings": "Go to Settings"
+  },
+  "settings": {
+    "title": "Settings",
+    "darkTheme": "Dark Theme",
+    "language": "Language",
+    "notifications": "Notifications",
+    "version": "Version",
+    "about": "About",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "alreadyAccount": "Already have an account?",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "resetPassword": "Reset Password"
+  },
+  "errors": {
+    "genericError": "Something went wrong. Please try again.",
+    "connectionError": "Connection error. Please check your internet connection.",
+    "invalidEmail": "Please enter a valid email address",
+    "invalidPassword": "Password must be at least 6 characters long",
+    "passwordMismatch": "Passwords do not match"
+  }
+}

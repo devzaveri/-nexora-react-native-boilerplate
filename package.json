@@ -1,0 +1,46 @@
+{
+  "name": "@nexora/react-native-boilerplate",
+  "version": "0.1.0",
+  "description": "A powerful CLI tool to generate fully dynamic, developer-first React Native boilerplates",
+  "main": "index.js",
+  "bin": {
+    "nexora-rn": "./bin/cli.js"
+  },
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint .",
+    "prepublishOnly": "npm test && npm run lint",
+    "publish": "npm publish --access public"
+  },
+  "keywords": [
+    "react-native",
+    "boilerplate",
+    "cli",
+    "template",
+    "generator",
+    "scaffold"
+  ],
+  "author": "Nexora",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "inquirer": "^8.2.5",
+    "fs-extra": "^11.1.1",
+    "glob": "^10.3.10",
+    "ora": "^5.4.1",
+    "handlebars": "^4.7.8",
+    "prettier": "^2.8.8",
+    "change-case": "^4.1.2",
+    "execa": "^5.1.1",
+    "listr2": "^6.6.1",
+    "replace-in-file": "^7.0.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "eslint": "^8.56.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

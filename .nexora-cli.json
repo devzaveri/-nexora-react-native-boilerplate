@@ -1,0 +1,68 @@
+{
+  "name": "@nexora/react-native-boilerplate",
+  "version": "0.1.0",
+  "features": [
+    {
+      "name": "navigation",
+      "type": "choice",
+      "options": ["stack", "tabs", "drawer", "none"],
+      "dependencies": {
+        "stack": ["@react-navigation/native", "@react-navigation/native-stack"],
+        "tabs": ["@react-navigation/native", "@react-navigation/bottom-tabs"],
+        "drawer": ["@react-navigation/native", "@react-navigation/drawer", "react-native-gesture-handler", "react-native-reanimated"]
+      }
+    },
+    {
+      "name": "state",
+      "type": "choice",
+      "options": ["redux", "zustand", "none"],
+      "dependencies": {
+        "redux": ["@reduxjs/toolkit", "react-redux"],
+        "zustand": ["zustand"]
+      }
+    },
+    {
+      "name": "theme",
+      "type": "boolean",
+      "dependencies": []
+    },
+    {
+      "name": "localization",
+      "type": "boolean",
+      "dependencies": ["i18next", "react-i18next"]
+    },
+    {
+      "name": "firebase",
+      "type": "boolean",
+      "dependencies": ["@react-native-firebase/app", "@react-native-firebase/auth", "@react-native-firebase/firestore"]
+    },
+    {
+      "name": "api",
+      "type": "boolean",
+      "dependencies": ["axios"]
+    },
+    {
+      "name": "storage",
+      "type": "choice",
+      "options": ["async-storage", "mmkv"],
+      "dependencies": {
+        "async-storage": ["@react-native-async-storage/async-storage"],
+        "mmkv": ["react-native-mmkv"]
+      }
+    },
+    {
+      "name": "ui",
+      "type": "choice",
+      "options": ["styled-components", "tailwind", "none"],
+      "dependencies": {
+        "styled-components": ["styled-components", "@types/styled-components"],
+        "tailwind": ["tailwind-rn", "tailwindcss", "postcss", "autoprefixer"]
+      }
+    },
+    {
+      "name": "auth",
+      "type": "boolean",
+      "dependencies": []
+    }
+  ]
+}

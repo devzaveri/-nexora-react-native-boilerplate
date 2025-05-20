@@ -17,6 +17,7 @@ The **Nexora React Native Boilerplate CLI** is a comprehensive tool designed to 
 - **Dynamic Project Management**: Add or remove features at any stage of development
 - **Feature-Rich Templates**: Navigation, state management, UI frameworks, and more
 - **Multiple Navigation Support**: Combine stack, tabs, and drawer navigation in a single app
+- **Template Updates**: Update existing projects with the latest template fixes and improvements
 - **Developer-First Approach**: Optimized for productivity and flexibility with powerful CLI options
 - **Consistent Architecture**: Enforces best practices and maintainable code structure
 - **Typescript & JavaScript Support**: Choose your preferred language during setup or switch later
@@ -199,6 +200,42 @@ Update configuration settings with a simple command:
 
 ```bash
 nexora-rn config --theme dark --primaryColor "#3498db" --apiUrl "https://api.example.com"
+```
+
+### Updating Projects with Latest Template Changes
+
+Update your existing projects with the latest template features and fixes:
+
+```bash
+nexora-rn update
+```
+
+This command will:
+1. Check if your project is a valid Nexora React Native project
+2. Create a backup of your project (can be disabled)
+3. Update templates with the latest fixes and improvements
+4. Only update files that have changed
+5. Preserve your customizations where possible
+
+#### Update Options
+
+You can customize the update process with various options:
+
+```bash
+# Update only specific features
+nexora-rn update --features navigation,theme
+
+# Force update even if the project is already up to date
+nexora-rn update --force
+
+# Skip confirmation prompts
+nexora-rn update --yes
+
+# Skip creating a backup
+nexora-rn update --no-backup
+
+# Skip installing dependencies after update
+nexora-rn update --skip-install
 ```
 
 #### Available Configuration Options

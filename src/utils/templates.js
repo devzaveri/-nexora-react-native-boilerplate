@@ -9,8 +9,10 @@ const { glob } = require('glob');
  * @param {string} projectDir - Project directory
  * @param {object} config - Project configuration
  * @param {array} specificFeatures - Optional array of specific features to process
+ * @param {object} options - Additional options
+ * @param {boolean} options.update - Whether this is an update to an existing project
  */
-async function processTemplates(projectDir, config, specificFeatures = []) {
+async function processTemplates(projectDir, config, specificFeatures = [], options = {}) {
   const templateDir = path.join(__dirname, '../templates');
   const tempDir = path.join(__dirname, '../.temp');
   
@@ -25,11 +27,11 @@ async function processTemplates(projectDir, config, specificFeatures = []) {
       : getFeaturesToProcess(config);
     
     for (const feature of featuresToProcess) {
-      await processFeatureTemplates(templateDir, projectDir, tempDir, config, feature);
+      await processFeatureTemplates(templateDir, projectDir, tempDir, config, feature, options);
     }
     
     // Process App.(js|tsx) file
-    await processAppFile(projectDir, config);
+    await processAppFile(projectDir, config, options);
     
     // Clean up
     await fs.remove(tempDir);
@@ -94,8 +96,15 @@ function getFeaturesToProcess(config) {
 
 /**
  * Process templates for a specific feature
+ * @param {string} templateDir - Template directory
+ * @param {string} projectDir - Project directory
+ * @param {string} tempDir - Temporary directory
+ * @param {object} config - Project configuration
+ * @param {string} feature - Feature to process
+ * @param {object} options - Additional options
+ * @param {boolean} options.update - Whether this is an update to an existing project
  */
-async function processFeatureTemplates(templateDir, projectDir, tempDir, config, feature) {
+async function processFeatureTemplates(templateDir, projectDir, tempDir, config, feature, options = {}) {
   // Determine language folder to use
   const languageFolder = config.language === 'TypeScript' ? 'typescript' : 'javascript';
   const featureTemplateDir = path.join(templateDir, feature, languageFolder);
@@ -174,17 +183,39 @@ async function processFeatureTemplates(templateDir, projectDir, tempDir, config,
       processedContent = processedContent.replace(`jsxprop=PLACEHOLDER_JSXPROP_${i}`, templatePlaceholders.jsxProps[i]);
     }
     
-    // Write processed template to output path
-    await fs.writeFile(outputPath, processedContent);
+    // Check if this is an update and the file already exists
+    const fileExists = await fs.pathExists(outputPath);
     
-    console.log(chalk.green(`Created: ${path.relative(projectDir, outputPath)}`));
+    if (options.update && fileExists) {
+      // In update mode, we need to be careful about overwriting user-modified files
+      // Read the existing file content
+      const existingContent = await fs.readFile(outputPath, 'utf8');
+      
+      // Only update the file if it's different from the template
+      if (existingContent !== processedContent) {
+        // Write processed template to output path
+        await fs.writeFile(outputPath, processedContent);
+        console.log(chalk.green(`Updated: ${path.relative(projectDir, outputPath)}`));
+      } else {
+        console.log(chalk.gray(`Skipped (unchanged): ${path.relative(projectDir, outputPath)}`));
+      }
+    } else {
+      // In create mode or if the file doesn't exist yet
+      // Write processed template to output path
+      await fs.writeFile(outputPath, processedContent);
+      console.log(chalk.green(`Created: ${path.relative(projectDir, outputPath)}`));
+    }
   }
 }
 
 /**
  * Process the main App.(js|tsx) file based on selected features
+ * @param {string} projectDir - Project directory
+ * @param {object} config - Project configuration
+ * @param {object} options - Additional options
+ * @param {boolean} options.update - Whether this is an update to an existing project
  */
-async function processAppFile(projectDir, config) {
+async function processAppFile(projectDir, config, options = {}) {
   const extension = config.language === 'TypeScript' ? 'tsx' : 'js';
   const appFile = path.join(projectDir, `App.${extension}`);
   
@@ -246,7 +277,9 @@ async function processAppFile(projectDir, config) {
   
   // Wrap the app component with providers
   for (let i = 0; i < providers.length; i++) {
-    appComponent = `${providers[i]}\n  ${appComponent}\n  ${providerClosings[i]}`;
+    appComponent = `${providers[i]}
+  ${appComponent}
+  ${providerClosings[i]}`;
   }
   
   // Create the complete App component
@@ -273,9 +306,24 @@ const styles = StyleSheet.create({
 export default App;
 `;
 
-  // Write updated App file
-  await fs.writeFile(appFile, appContent);
-  console.log(chalk.green(`Updated: App.${extension}`));
+  // In update mode, check if the file has changed before overwriting
+  if (options.update) {
+    // Read the existing file content
+    const existingContent = await fs.readFile(appFile, 'utf8');
+    
+    // Only update the file if it's different from the template
+    if (existingContent !== appContent) {
+      // Write updated App file
+      await fs.writeFile(appFile, appContent);
+      console.log(chalk.green(`Updated: App.${extension}`));
+    } else {
+      console.log(chalk.gray(`Skipped updating App.${extension} (unchanged)`));
+    }
+  } else {
+    // Write updated App file
+    await fs.writeFile(appFile, appContent);
+    console.log(chalk.green(`Updated: App.${extension}`));
+  }
 }
 
 module.exports = {

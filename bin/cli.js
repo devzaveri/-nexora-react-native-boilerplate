@@ -12,6 +12,7 @@ const { addFeature } = require('../src/commands/add');
 const { removeFeature } = require('../src/commands/remove');
 const { renameApp } = require('../src/commands/rename');
 const { configureApp } = require('../src/commands/config');
+const { updateProject } = require('../src/commands/update');
 const packageJson = require('../package.json');
 
 // Print banner
@@ -97,13 +98,15 @@ program
     }
   });
 
-// Configure app settings
+// Configure command
 program
   .command('config')
-  .description('Configure app settings')
-  .option('-p, --path <path>', 'Path to the project', '.')
-  .option('--theme <theme>', 'Set default theme (light, dark)')
-  .option('--language <language>', 'Set default language')
+  .description('Configure your React Native project settings')
+  .option('--language <language>', 'Change language (JavaScript, TypeScript)')
+  .option('--navigation <type>', 'Change navigation type (stack, drawer, tabs, none)')
+  .option('--state <manager>', 'Change state management (redux, zustand, none)')
+  .option('--ui <framework>', 'Change UI framework (styled-components, tailwind)')
+  .option('--storage <type>', 'Change storage type (async-storage, mmkv)')
   .action(async (options) => {
     try {
       await configureApp(options);
@@ -113,17 +116,40 @@ program
     }
   });
 
-// Default command when no args are provided
+// Update command
+program
+  .command('update')
+  .description('Update an existing project with the latest template features and fixes')
+  .option('--features <features>', 'Comma-separated list of specific features to update')
+  .option('--force', 'Force update even if the project is already up to date', false)
+  .option('--yes', 'Skip confirmation prompts', false)
+  .option('--no-backup', 'Skip creating a backup before updating', false)
+  .option('--skip-install', 'Skip installing dependencies after update', false)
+  .action(async (options) => {
+    try {
+      await updateProject(options);
+    } catch (error) {
+      console.error(chalk.red('Error updating project:'), error);
+      process.exit(1);
+    }
+  });
+
+program.parse(process.argv);
+
+// If no command is provided, show help
+if (!process.argv.slice(2).length) {
+  program.outputHelp();
+}
+
 program.addHelpText('after', `
 Examples:
   $ nexora-rn create MyAwesomeApp
-  $ nexora-rn add drawer
-  $ nexora-rn remove firebase
-  $ nexora-rn rename "New App Name"
+  $ nexora-rn add firebase
+  $ nexora-rn remove theme
+  $ nexora-rn rename "My New App Name"
   $ nexora-rn config --theme dark
-
-Or use with npx:
-  $ npx @nexora/react-native-boilerplate create MyAwesomeApp
+  $ nexora-rn update
+  $ nexora-rn update --features navigation,theme
 `);
 
 program.parse(process.argv);

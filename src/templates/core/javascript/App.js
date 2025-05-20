@@ -34,12 +34,13 @@ const App = () => {
     <Provider store={store}>
     {{/if}}
     {{/if}}
+    {{#if navigation}}
+    <NavigationContainer>
+    {{/if}}
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" />
       {{#if navigation}}
-      <NavigationContainer>
-        <AppNavigator />
-      </NavigationContainer>
+      <AppNavigator />
       {{else}}
       <View style={styles.container}>
         <Text style={styles.title}>Welcome to {{name}}!</Text>
@@ -47,6 +48,9 @@ const App = () => {
       </View>
       {{/if}}
     </SafeAreaView>
+    {{#if navigation}}
+    </NavigationContainer>
+    {{/if}}
     {{#if state}}
     {{#if (eq state "redux")}}
     </Provider>

@@ -96,17 +96,28 @@ function getFeaturesToProcess(config) {
  * Process templates for a specific feature
  */
 async function processFeatureTemplates(templateDir, projectDir, tempDir, config, feature) {
-  const featureTemplateDir = path.join(templateDir, feature, config.language === 'TypeScript' ? 'typescript' : 'javascript');
+  // Determine language folder to use
+  const languageFolder = config.language === 'TypeScript' ? 'typescript' : 'javascript';
+  const featureTemplateDir = path.join(templateDir, feature, languageFolder);
   
   if (!await fs.pathExists(featureTemplateDir)) {
     console.log(chalk.yellow(`No templates found for feature: ${feature}`));
     return;
   }
   
-  // Get all template files
+  // Get all template files for the selected language only
   const templateFiles = await glob('**/*', { cwd: featureTemplateDir, nodir: true });
   
+  // Make sure we only process files for the selected language
+  const isTypeScript = config.language === 'TypeScript';
+  
   for (const templateFile of templateFiles) {
+    // Skip any TypeScript files if JavaScript is selected, and vice versa
+    if (!isTypeScript && templateFile.endsWith('.tsx')) continue;
+    if (!isTypeScript && templateFile.endsWith('.ts')) continue;
+    if (isTypeScript && templateFile.endsWith('.jsx')) continue;
+    if (isTypeScript && templateFile.endsWith('.js') && !templateFile.includes('babel.config.js') && !templateFile.includes('metro.config.js')) continue;
+    
     const templatePath = path.join(featureTemplateDir, templateFile);
     const outputPath = path.join(projectDir, templateFile.replace('__NAME__', config.name));
     

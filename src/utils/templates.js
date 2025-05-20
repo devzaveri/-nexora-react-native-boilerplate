@@ -50,9 +50,22 @@ function getFeaturesToProcess(config) {
     return features;
   }
   
-  if (config.navigation !== 'none') {
+  // Handle navigation types (can be an array for multiple types)
+  if (config.navigation && config.navigation !== 'none') {
     features.push('navigation');
-    features.push(config.navigation);
+    
+    // Handle multiple navigation types
+    if (Array.isArray(config.navigation)) {
+      // Add each navigation type as a feature
+      config.navigation.forEach(navType => {
+        if (navType !== 'none') {
+          features.push(navType);
+        }
+      });
+    } else {
+      // Single navigation type
+      features.push(config.navigation);
+    }
   }
   
   if (config.state !== 'none') {

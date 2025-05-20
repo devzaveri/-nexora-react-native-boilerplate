@@ -21,6 +21,14 @@
   ],
   "author": "Nexora",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devzaveri/-nexora-react-native-boilerplate.git"
+  },
+  "homepage": "https://github.com/devzaveri/-nexora-react-native-boilerplate",
+  "bugs": {
+    "url": "https://github.com/devzaveri/-nexora-react-native-boilerplate/issues"
+  },
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^11.1.0",

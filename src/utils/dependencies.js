@@ -17,14 +17,21 @@ function getDependenciesForFeatures(config) {
   dependencies.dependencies.push('@react-navigation/native', 'react-native-screens', 'react-native-safe-area-context');
   
   // Navigation dependencies
-  if (config.navigation === 'stack' || config.navigation === 'drawer' || config.navigation === 'tabs') {
-    dependencies.dependencies.push('@react-navigation/native-stack');
+  const navigationTypes = Array.isArray(config.navigation) ? config.navigation : [config.navigation];
+  
+  if (navigationTypes.length > 0 && !navigationTypes.includes('none')) {
+    // Add stack navigation if selected
+    if (navigationTypes.includes('stack')) {
+      dependencies.dependencies.push('@react-navigation/native-stack');
+    }
     
-    if (config.navigation === 'drawer') {
+    // Add drawer navigation if selected
+    if (navigationTypes.includes('drawer')) {
       dependencies.dependencies.push('@react-navigation/drawer', 'react-native-gesture-handler', 'react-native-reanimated');
     }
     
-    if (config.navigation === 'tabs') {
+    // Add tabs navigation if selected
+    if (navigationTypes.includes('tabs')) {
       dependencies.dependencies.push('@react-navigation/bottom-tabs');
     }
   }

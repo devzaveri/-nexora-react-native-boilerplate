@@ -104,9 +104,41 @@ class TemplateManager {
    * Generate navigation feature
    */
   static async generateNavigationFeature(projectDir, config) {
-    // Implementation details for generating navigation code
-    // This would check config.navigation and generate the appropriate navigation setup
     console.log(chalk.blue('Generating navigation feature...'));
+    
+    // Convert navigation to array if it's not already
+    const navigationTypes = Array.isArray(config.navigation) ? config.navigation : [config.navigation];
+    
+    // Skip if no navigation or 'none' is selected
+    if (navigationTypes.length === 0 || navigationTypes.includes('none')) {
+      console.log(chalk.yellow('No navigation types selected, skipping navigation setup'));
+      return;
+    }
+    
+    // Generate base navigation setup
+    console.log(chalk.blue('Setting up base navigation...'));
+    
+    // Generate each selected navigation type
+    if (navigationTypes.includes('stack')) {
+      console.log(chalk.blue('Generating stack navigation...'));
+      // Implementation for stack navigation
+    }
+    
+    if (navigationTypes.includes('tabs')) {
+      console.log(chalk.blue('Generating tabs navigation...'));
+      // Implementation for tabs navigation
+    }
+    
+    if (navigationTypes.includes('drawer')) {
+      console.log(chalk.blue('Generating drawer navigation...'));
+      // Implementation for drawer navigation
+    }
+    
+    // If multiple navigation types are selected, generate a combined navigator
+    if (navigationTypes.length > 1) {
+      console.log(chalk.blue('Generating combined navigation setup...'));
+      // Implementation for combined navigation setup
+    }
   }
 
   /**

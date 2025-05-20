@@ -16,6 +16,7 @@ The **Nexora React Native Boilerplate CLI** is a comprehensive tool designed to 
 
 - **Dynamic Project Management**: Add or remove features at any stage of development
 - **Feature-Rich Templates**: Navigation, state management, UI frameworks, and more
+- **Multiple Navigation Support**: Combine stack, tabs, and drawer navigation in a single app
 - **Developer-First Approach**: Optimized for productivity and flexibility with powerful CLI options
 - **Consistent Architecture**: Enforces best practices and maintainable code structure
 - **Typescript & JavaScript Support**: Choose your preferred language during setup or switch later
@@ -67,7 +68,7 @@ nexora-rn create MyAwesomeApp
 During project creation, you'll be prompted to select:
 
 - **Language**: JavaScript or TypeScript
-- **Navigation Type**: Stack, Tabs, Drawer, or any combination
+- **Navigation Type**: Choose navigation types (comma-separated: stack,tabs,drawer) (default: "stack")
 - **State Management**: Redux Toolkit, Zustand, or Context API (optional)
 - **UI Framework**: styled-components or tailwind-rn
 - **Additional Features**: Authentication, API services, Firebase, Localization, etc.
@@ -78,7 +79,7 @@ During project creation, you'll be prompted to select:
 #### Example with Options
 
 ```bash
-nexora-rn create MyAwesomeApp --typescript --navigation=stack,tabs --state=redux --ui=styled-components --features=auth,firebase,localization
+nexora-rn create MyAwesomeApp --navigation=stack,tabs,drawer --typescript --state=redux --ui=styled-components --features=auth,firebase,localization
 ```
 
 #### JavaScript/TypeScript Toggle
@@ -131,7 +132,7 @@ nexora-rn add component Dropdown --typescript
 
 | Category | Features | Description |
 |----------|----------|-------------|
-| **Navigation** | `stack`, `tabs`, `drawer` | Different navigation patterns |
+| **Navigation** | `stack`, `tabs`, `drawer` | Different navigation patterns (can be used in combination) |
 | **Authentication** | `auth` | User authentication flows and screens |
 | **Backend** | `firebase` | Firebase integration (Auth, Firestore, Storage, FCM) |
 | **API** | `api` | REST API service layer with Axios |

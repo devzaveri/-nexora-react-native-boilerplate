@@ -19,6 +19,11 @@ const { saveProjectConfig } = require('../utils/config');
 async function createProject(projectName, options) {
   console.log(chalk.blue(`Creating a new React Native project: ${chalk.bold(projectName)}`));
   
+  // Process navigation option if it's a comma-separated string
+  if (typeof options.navigation === 'string' && options.navigation.includes(',')) {
+    options.navigation = options.navigation.split(',').map(type => type.trim());
+  }
+  
   // If not skipping prompts, present interactive options
   const projectConfig = !options.skipPrompts
     ? await promptForOptions(projectName, options)
@@ -79,11 +84,16 @@ async function promptForOptions(projectName, cliOptions) {
       default: cliOptions.language || 'TypeScript',
     },
     {
-      type: 'list',
+      type: 'checkbox',
       name: 'navigation',
-      message: 'Which navigation type would you like to use?',
-      choices: ['stack', 'tabs', 'drawer', 'none'],
-      default: cliOptions.navigation || 'stack',
+      message: 'Which navigation types would you like to use? (Select multiple if needed)',
+      choices: [
+        { name: 'Stack Navigation', value: 'stack' },
+        { name: 'Bottom Tabs Navigation', value: 'tabs' },
+        { name: 'Drawer Navigation', value: 'drawer' }
+      ],
+      default: cliOptions.navigation ? [cliOptions.navigation] : ['stack'],
+      validate: (input) => input.length > 0 || 'Please select at least one navigation type, or none if you don\'t need navigation'
     },
     {
       type: 'list',

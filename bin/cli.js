@@ -36,7 +36,7 @@ program
   .command('create <projectName>')
   .description('Create a new React Native project with selected features')
   .option('--language <language>', 'Choose JavaScript or TypeScript', 'TypeScript')
-  .option('--navigation <type>', 'Choose navigation type (stack, tabs, drawer, none)', 'stack')
+  .option('--navigation <types>', 'Choose navigation types (comma-separated: stack,tabs,drawer)', 'stack')
   .option('--state <manager>', 'Choose state management (redux, zustand, none)', 'none')
   .option('--theme', 'Include theme system', false)
   .option('--localization', 'Include localization support', false)

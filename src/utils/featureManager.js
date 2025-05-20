@@ -98,13 +98,17 @@ class FeatureManager {
   static isFeatureInstalled(config, feature) {
     switch (feature) {
       case 'navigation':
-        return config.navigation !== 'none';
+        const navTypes = Array.isArray(config.navigation) ? config.navigation : [config.navigation];
+        return navTypes.length > 0 && !navTypes.includes('none');
       case 'drawer':
-        return config.navigation === 'drawer';
+        const drawerNav = Array.isArray(config.navigation) ? config.navigation : [config.navigation];
+        return drawerNav.includes('drawer');
       case 'tabs':
-        return config.navigation === 'tabs';
+        const tabsNav = Array.isArray(config.navigation) ? config.navigation : [config.navigation];
+        return tabsNav.includes('tabs');
       case 'stack':
-        return config.navigation === 'stack';
+        const stackNav = Array.isArray(config.navigation) ? config.navigation : [config.navigation];
+        return stackNav.includes('stack');
       case 'redux':
         return config.state === 'redux';
       case 'zustand':
@@ -138,16 +142,55 @@ class FeatureManager {
 
     switch (feature) {
       case 'navigation':
-        updatedConfig.navigation = enable ? 'stack' : 'none';
+        updatedConfig.navigation = enable ? ['stack'] : [];
         break;
       case 'drawer':
-        updatedConfig.navigation = enable ? 'drawer' : 'none';
+        if (enable) {
+          // Add drawer to navigation types if not already present
+          const navTypes = Array.isArray(updatedConfig.navigation) ? updatedConfig.navigation : [updatedConfig.navigation];
+          if (!navTypes.includes('drawer')) {
+            updatedConfig.navigation = Array.isArray(updatedConfig.navigation) ? 
+              [...updatedConfig.navigation, 'drawer'] : 
+              [updatedConfig.navigation, 'drawer'];
+          }
+        } else {
+          // Remove drawer from navigation types
+          updatedConfig.navigation = Array.isArray(updatedConfig.navigation) ?
+            updatedConfig.navigation.filter(type => type !== 'drawer') :
+            (updatedConfig.navigation === 'drawer' ? [] : [updatedConfig.navigation]);
+        }
         break;
       case 'tabs':
-        updatedConfig.navigation = enable ? 'tabs' : 'none';
+        if (enable) {
+          // Add tabs to navigation types if not already present
+          const navTypes = Array.isArray(updatedConfig.navigation) ? updatedConfig.navigation : [updatedConfig.navigation];
+          if (!navTypes.includes('tabs')) {
+            updatedConfig.navigation = Array.isArray(updatedConfig.navigation) ? 
+              [...updatedConfig.navigation, 'tabs'] : 
+              [updatedConfig.navigation, 'tabs'];
+          }
+        } else {
+          // Remove tabs from navigation types
+          updatedConfig.navigation = Array.isArray(updatedConfig.navigation) ?
+            updatedConfig.navigation.filter(type => type !== 'tabs') :
+            (updatedConfig.navigation === 'tabs' ? [] : [updatedConfig.navigation]);
+        }
         break;
       case 'stack':
-        updatedConfig.navigation = enable ? 'stack' : 'none';
+        if (enable) {
+          // Add stack to navigation types if not already present
+          const navTypes = Array.isArray(updatedConfig.navigation) ? updatedConfig.navigation : [updatedConfig.navigation];
+          if (!navTypes.includes('stack')) {
+            updatedConfig.navigation = Array.isArray(updatedConfig.navigation) ? 
+              [...updatedConfig.navigation, 'stack'] : 
+              [updatedConfig.navigation, 'stack'];
+          }
+        } else {
+          // Remove stack from navigation types
+          updatedConfig.navigation = Array.isArray(updatedConfig.navigation) ?
+            updatedConfig.navigation.filter(type => type !== 'stack') :
+            (updatedConfig.navigation === 'stack' ? [] : [updatedConfig.navigation]);
+        }
         break;
       case 'redux':
         updatedConfig.state = enable ? 'redux' : 'none';

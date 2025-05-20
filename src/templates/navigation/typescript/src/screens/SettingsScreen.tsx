@@ -57,7 +57,7 @@ const SettingsScreen: React.FC = () => {
           value={isDark}
           onValueChange={toggleTheme}
           {{#if theme}}
-          trackColor={{ false: colors.border, true: colors.primary }}
+          trackColor={\{{ false: colors.border, true: colors.primary \}}}
           thumbColor={isDark ? colors.accent : colors.card}
           {{/if}}
         />

@@ -101,9 +101,28 @@ async function processFeatureTemplates(templateDir, projectDir, tempDir, config,
     await fs.ensureDir(path.dirname(outputPath));
     
     // Process template with Handlebars
-    const templateContent = await fs.readFile(templatePath, 'utf8');
+    let templateContent = await fs.readFile(templatePath, 'utf8');
+
+    // Pre-process React Native JSX syntax to avoid conflicts with Handlebars
+    // Replace React Native style double curly braces with a placeholder
+    let templatePlaceholders = [];
+    templatePlaceholders.trackColor = [];
+
+    // Handle trackColor={{ false: colors.border, true: colors.primary }}
+    templatePlaceholders.trackColor = templateContent.match(/trackColor={{\s*false:\s*colors\.\w+,\s*true:\s*colors\.\w+\s*}}/g) || [];
+    for (let i = 0; i < templatePlaceholders.trackColor.length; i++) {
+      templateContent = templateContent.replace(templatePlaceholders.trackColor[i], `trackColor=PLACEHOLDER_TRACKCOLOR_${i}`);
+    }
+
+    // Compile the template
     const template = Handlebars.compile(templateContent);
-    const processedContent = template({ ...config, projectName: config.name });
+    let processedContent = template({ ...config, projectName: config.name });
+
+    // Post-process to restore React Native JSX syntax
+    // Restore trackColor placeholders
+    for (let i = 0; i < templatePlaceholders.trackColor.length; i++) {
+      processedContent = processedContent.replace(`trackColor=PLACEHOLDER_TRACKCOLOR_${i}`, templatePlaceholders.trackColor[i]);
+    }
     
     // Write processed template to output path
     await fs.writeFile(outputPath, processedContent);

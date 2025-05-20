@@ -16,10 +16,11 @@ The **Nexora React Native Boilerplate CLI** is a comprehensive tool designed to 
 
 - **Dynamic Project Management**: Add or remove features at any stage of development
 - **Feature-Rich Templates**: Navigation, state management, UI frameworks, and more
-- **Developer-First Approach**: Optimized for productivity and flexibility
+- **Developer-First Approach**: Optimized for productivity and flexibility with powerful CLI options
 - **Consistent Architecture**: Enforces best practices and maintainable code structure
-- **Typescript & JavaScript Support**: Choose your preferred language
+- **Typescript & JavaScript Support**: Choose your preferred language during setup or switch later
 - **Zero Configuration**: Get started with minimal setup
+- **Post-Scaffold Modifications**: Change app name, add/remove features, or reconfigure at any time
 
 ## 📦 Installation
 
@@ -28,7 +29,7 @@ The **Nexora React Native Boilerplate CLI** is a comprehensive tool designed to 
 Install the package globally to use the CLI commands from anywhere:
 
 ```bash
-npm install -g @nexora/react-native-boilerplate
+npm install -g @nexora-dev/react-native-boilerplate
 ```
 
 After installation, you can use the CLI with:
@@ -42,7 +43,7 @@ nexora-rn create MyAwesomeApp
 Alternatively, use it directly with npx without installing:
 
 ```bash
-npx @nexora/react-native-boilerplate create MyAwesomeApp
+npx @nexora-dev/react-native-boilerplate create MyAwesomeApp
 ```
 
 ### System Requirements
@@ -52,6 +53,8 @@ npx @nexora/react-native-boilerplate create MyAwesomeApp
 - **React Native**: Compatible with React Native 0.70.0 and above
 
 ## 🛠️ Usage Guide
+
+> **Note**: All commands support the `--help` flag for detailed usage information. For example: `nexora-rn add --help`
 
 ### Creating a New Project
 
@@ -65,14 +68,26 @@ During project creation, you'll be prompted to select:
 
 - **Language**: JavaScript or TypeScript
 - **Navigation Type**: Stack, Tabs, Drawer, or any combination
-- **State Management**: Redux Toolkit, Zustand, or Context API
+- **State Management**: Redux Toolkit, Zustand, or Context API (optional)
 - **UI Framework**: styled-components or tailwind-rn
-- **Additional Features**: Authentication, API services, Firebase, etc.
+- **Additional Features**: Authentication, API services, Firebase, Localization, etc.
+- **Storage**: AsyncStorage (default) or MMKV
+- **Theme System**: Light/Dark mode support
+- **Sample Screens**: Home, Settings, Profile, etc.
 
 #### Example with Options
 
 ```bash
-nexora-rn create MyAwesomeApp --typescript --navigation=stack,tabs --state=redux --ui=styled-components
+nexora-rn create MyAwesomeApp --typescript --navigation=stack,tabs --state=redux --ui=styled-components --features=auth,firebase,localization
+```
+
+#### JavaScript/TypeScript Toggle
+
+You can switch between JavaScript and TypeScript even after project creation:
+
+```bash
+nexora-rn convert --to=typescript  # Convert JS project to TypeScript
+nexora-rn convert --to=javascript  # Convert TS project to JavaScript
 ```
 
 ### Adding Features to an Existing Project
@@ -89,18 +104,44 @@ This will:
 3. Update existing files to integrate the new feature
 4. Provide usage examples
 
+#### Adding UI Components
+
+Add specific UI components to your project:
+
+```bash
+nexora-rn add component Button
+nexora-rn add component Card
+nexora-rn add component Input
+```
+
+You can specify the UI framework to use:
+
+```bash
+nexora-rn add component Modal --ui=styled-components
+nexora-rn add component Toast --ui=tailwind
+```
+
+For TypeScript projects:
+
+```bash
+nexora-rn add component Dropdown --typescript
+```
+
 #### Supported Features
 
 | Category | Features | Description |
 |----------|----------|-------------|
 | **Navigation** | `stack`, `tabs`, `drawer` | Different navigation patterns |
 | **Authentication** | `auth` | User authentication flows and screens |
-| **Backend** | `firebase` | Firebase integration (Auth, Firestore, etc.) |
+| **Backend** | `firebase` | Firebase integration (Auth, Firestore, Storage, FCM) |
 | **API** | `api` | REST API service layer with Axios |
-| **State** | `redux`, `zustand` | State management solutions |
+| **State** | `redux`, `zustand`, `context` | State management solutions |
 | **Internationalization** | `localization` | i18n support with language switching |
 | **Styling** | `theme`, `tailwind`, `styled-components` | UI and theming options |
 | **Storage** | `asyncstorage`, `mmkv` | Local storage solutions |
+| **Assets** | `fonts` | Custom font integration |
+| **UI Components** | `components` | Reusable UI components |
+| **Screens** | `screens` | Sample screen templates |
 
 ### Removing Features
 
@@ -115,6 +156,27 @@ This will:
 2. Clean up configuration files
 3. Remove feature-specific code
 4. Update imports and references
+
+#### Removing UI Components
+
+Remove specific UI components from your project:
+
+```bash
+nexora-rn remove component Button
+nexora-rn remove component Card
+```
+
+Remove all components of a specific type:
+
+```bash
+nexora-rn remove components --ui=tailwind
+```
+
+Remove unused components (those not imported anywhere in your project):
+
+```bash
+nexora-rn cleanup components
+```
 
 ### Renaming Your App
 
@@ -150,9 +212,23 @@ nexora-rn config --apiUrl "https://api.example.com"
 # Set primary color
 nexora-rn config --primaryColor "#3498db"
 
+# Change font family
+nexora-rn config --fontFamily "Roboto"
+
+# Configure Firebase settings
+nexora-rn config --firebase.region "us-central1"
+
+# Toggle features
+nexora-rn config --enableFeature analytics
+nexora-rn config --disableFeature crashlytics
+
 # Reset to defaults
 nexora-rn config --reset
 ```
+
+#### Configuration File
+
+All settings are stored in `.nexora-cli-config.json` at the root of your project. This file tracks your project setup to avoid duplicates and ensure consistent feature management.
 
 ## ✨ Features in Detail
 
@@ -184,6 +260,8 @@ A comprehensive theming solution that includes:
 - **Theme Context**: React Context for accessing theme values throughout the app
 - **Themed Components**: UI components that automatically adapt to the current theme
 - **Custom Theming**: Easily extend with your own color schemes and design tokens
+- **Live Theme Parent View**: `<ThemeProvider>` wrapper for the app with dynamic theme switching
+- **Customizable Theme Variables**: Change primary colors, font families, and other design tokens
 
 ```javascript
 // Example theme usage
@@ -208,6 +286,9 @@ Built-in internationalization with i18n-js:
 - **Translation Components**: Components that automatically translate text
 - **Pluralization**: Support for plural forms and number formatting
 - **Date/Time Formatting**: Locale-aware date and time formatting
+- **Auto-Detection**: Automatic language detection with fallback
+- **Centralized Locales**: Organized locale files (en.json, gu.json, etc.)
+- **Dynamic Addition**: Add new languages at any point in development
 
 ```javascript
 // Example localization usage
@@ -290,6 +371,38 @@ All components are:
 - Accessibility-friendly
 - Customizable via props
 - Available in both JavaScript and TypeScript
+
+#### Creating Custom Components
+
+Create your own custom components that follow the same patterns:
+
+```bash
+nexora-rn generate component MyCustomComponent
+```
+
+This will create a new component with the following structure:
+
+```
+src/components/MyCustomComponent/
+├── index.js             # Main component file
+├── styles.js            # Component styles
+└── MyCustomComponent.test.js  # Test file
+```
+
+For TypeScript projects:
+
+```bash
+nexora-rn generate component MyCustomComponent --typescript
+```
+
+This creates:
+
+```
+src/components/MyCustomComponent/
+├── index.tsx            # Main component file with types
+├── styles.ts            # Typed styles
+└── MyCustomComponent.test.tsx  # Typed test file
+```
 
 ## 📁 Project Structure
 
@@ -414,50 +527,119 @@ react-native-boilerplate/
 ├── bin/                  # CLI entry point
 ├── src/
 │   ├── commands/         # CLI command implementations
+│   │   ├── add.js        # Add feature command
+│   │   ├── create.js     # Create project command
+│   │   ├── remove.js     # Remove feature command
+│   │   ├── rename.js     # Rename app command
+│   │   └── config.js     # Configure settings command
 │   ├── templates/        # Project templates
 │   │   ├── api/          # API service templates
 │   │   ├── auth/         # Authentication templates
 │   │   ├── firebase/     # Firebase integration templates
 │   │   ├── navigation/   # Navigation templates
+│   │   │   ├── stack/    # Stack navigation templates
+│   │   │   ├── tabs/     # Tab navigation templates
+│   │   │   └── drawer/   # Drawer navigation templates
 │   │   ├── redux/        # Redux state management templates
 │   │   ├── ui/           # UI component templates
-│   │   └── zustand/      # Zustand state management templates
+│   │   │   ├── styled-components/ # Styled-components templates
+│   │   │   └── tailwind/ # Tailwind templates
+│   │   ├── zustand/      # Zustand state management templates
+│   │   ├── localization/ # i18n templates
+│   │   ├── storage/      # Storage templates
+│   │   └── theme/        # Theme system templates
 │   └── utils/            # Helper utilities
+│       ├── featureManager.js # Feature installation/removal
+│       ├── templateManager.js # Template processing
+│       ├── dependencies.js # Dependency management
+│       └── projectUtils.js # Project file operations
 └── package.json          # Project configuration
 ```
 
+### Modular Architecture
+
+The CLI is designed with a modular architecture that allows for easy extension:
+
+- Each feature is encapsulated in its own module
+- Modules can be installed/uninstalled cleanly
+- The `.nexora-cli-config.json` file tracks project setup
+- New modules can be added without modifying core code
+
 ## 🤝 Contributing
 
-We welcome contributions from the community! Here's how you can help:
+We welcome contributions from the community! This project is open for collaboration, and we're excited to see your ideas and improvements.
 
 ### Contribution Guidelines
 
-1. **Fork the Repository**: Create your own fork of the project
-2. **Create a Feature Branch**:
+1. **Fork the Repository**: Create your own fork of the project from [github.com/devzaveri/-nexora-react-native-boilerplate](https://github.com/devzaveri/-nexora-react-native-boilerplate)
+
+2. **Clone Your Fork**:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/-nexora-react-native-boilerplate.git
+   cd -nexora-react-native-boilerplate
+   ```
+
+3. **Set Up Development Environment**:
+   ```bash
+   npm install
+   npm link  # To test locally
+   ```
+
+4. **Create a Feature Branch**:
    ```bash
    git checkout -b feature/amazing-feature
    ```
-3. **Make Your Changes**: Implement your feature or bug fix
-4. **Follow Code Style**: Ensure your code follows the project's style guidelines
-5. **Write Tests**: Add tests for your changes
-6. **Document Your Changes**: Update documentation as needed
-7. **Commit Your Changes**:
+
+5. **Make Your Changes**: Implement your feature or bug fix
+
+6. **Test Your Changes**:
+   ```bash
+   # Create a test project
+   nexora-rn create TestProject
+   # Test your specific feature
+   nexora-rn add your-feature
+   ```
+
+7. **Follow Code Style**: Ensure your code follows the project's style guidelines
+
+8. **Document Your Changes**: Update documentation as needed
+
+9. **Commit Your Changes**:
    ```bash
    git commit -m 'Add: Implement amazing feature'
    ```
-8. **Push to Your Branch**:
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-9. **Open a Pull Request**: Submit a PR with a clear description of your changes
 
-### Types of Contributions
+10. **Push to Your Branch**:
+    ```bash
+    git push origin feature/amazing-feature
+    ```
 
+11. **Open a Pull Request**: Submit a PR with a clear description of your changes
+
+### Types of Contributions We're Looking For
+
+- **New Feature Templates**: Add support for additional libraries and tools
+- **UI Components**: Create new reusable UI components
+- **Navigation Patterns**: Implement additional navigation patterns
+- **State Management Solutions**: Add support for other state management libraries
+- **Documentation Improvements**: Enhance guides and examples
 - **Bug Fixes**: Help identify and fix issues
-- **Feature Additions**: Implement new features or enhancements
-- **Documentation**: Improve or expand documentation
-- **Templates**: Create new templates or improve existing ones
-- **Testing**: Add or improve tests
+- **Performance Optimizations**: Improve CLI and template performance
+
+### Development Workflow
+
+When developing new features or fixing bugs, follow this workflow:
+
+1. **Create an Issue**: Before starting work, create an issue describing what you plan to do
+2. **Discuss the Approach**: Get feedback on your proposed implementation
+3. **Implement Changes**: Make your changes in a feature branch
+4. **Add Tests**: Ensure your changes are tested
+5. **Update Documentation**: Make sure documentation reflects your changes
+6. **Submit PR**: Reference the original issue in your pull request
+
+### Code of Conduct
+
+We expect all contributors to be respectful and inclusive. Any form of harassment or disrespectful behavior will not be tolerated.
 
 ## ❓ Troubleshooting and FAQ
 
@@ -543,6 +725,22 @@ Yes! Fork the repository and modify the templates in the `src/templates` directo
 
 Create a new directory in the appropriate category under `src/templates` with your feature implementation, then update the feature manager in `src/utils/featureManager.js` to include your new feature.
 
+#### How do I create my own component templates?
+
+Component templates are located in `src/templates/ui/[framework]/[language]/src/components/`. To add a new component template:
+
+1. Create a new file in the appropriate directory (e.g., `MyComponent.js` or `MyComponent.tsx`)
+2. Implement your component following the existing patterns
+3. Update `src/utils/templates.js` to include your new component
+
+#### Can I use this CLI to manage existing React Native projects?
+
+Yes, but with some limitations. The CLI works best with projects that were initially created using this boilerplate. For existing projects, you can:
+
+1. Use `nexora-rn add component [name]` to add individual components
+2. Manually copy templates from the CLI's template directory
+3. Use `nexora-rn init` in an existing project to add boilerplate structure
+
 ## 📋 Additional Information
 
 ### Versioning
@@ -559,13 +757,26 @@ For available versions, see the [tags on this repository](https://github.com/dev
 
 Upcoming features and improvements:
 
-- [ ] Expo support
+- [ ] Expo support with EAS build configuration
 - [ ] React Native Web compatibility
 - [ ] Additional UI component libraries
 - [ ] GraphQL integration
 - [ ] E2E testing templates
 - [ ] CI/CD pipeline templates
 - [ ] Project analytics and performance monitoring
+- [ ] Plugin system for community modules
+- [ ] Auto-generate translation keys when new text is added
+- [ ] ESLint + Prettier + Husky git hooks templates
+- [ ] Error-free imports with enhanced TypeScript types
+
+### Code Quality
+
+The boilerplate includes:
+
+- **ESLint Configuration**: Customized rules for React Native
+- **Prettier Setup**: Consistent code formatting
+- **TypeScript Support**: Comprehensive type definitions
+- **Optional Git Hooks**: Using Husky for pre-commit checks
 
 ### License
 

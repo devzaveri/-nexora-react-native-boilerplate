@@ -153,9 +153,9 @@ async function createReactNativeProject(projectName, config) {
   const spinner = ora('Creating React Native project...').start();
   
   try {
-    // Initialize React Native project with React Native CLI
+    // Initialize React Native project with the recommended React Native Community CLI
     await execa('npx', [
-      'react-native',
+      '@react-native-community/cli',
       'init',
       projectName,
       config.language === 'TypeScript' ? '--template react-native-template-typescript' : ''
@@ -164,7 +164,8 @@ async function createReactNativeProject(projectName, config) {
     spinner.succeed('React Native project created');
   } catch (error) {
     spinner.fail('Failed to create React Native project');
-    throw error;
+    console.error('Error details:', error.stderr || error.message);
+    throw new Error('Failed to create React Native project. Please make sure you have the latest Node.js and npm installed.');
   }
 }
 

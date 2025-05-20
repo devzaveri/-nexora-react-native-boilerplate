@@ -1,6 +1,6 @@
 {
   "name": "@nexora-dev/react-native-boilerplate",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "A powerful CLI tool to generate fully dynamic, developer-first React Native boilerplates",
   "main": "index.js",
   "bin": {
